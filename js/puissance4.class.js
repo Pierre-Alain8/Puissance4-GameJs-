@@ -79,7 +79,9 @@ class Puissance4 {
         }
        
         // var player = this.playerTurn;
+        // 
         this.checkWinner(x, y, player);
+
         
 
 
