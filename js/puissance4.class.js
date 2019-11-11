@@ -49,6 +49,7 @@ class Puissance4 {
             this.addJeton(x,y);
         }
         console.log(y,x)
+        
 
         
         
@@ -66,8 +67,7 @@ class Puissance4 {
         // Udapte notre grille en mettant 1 ou 2 en fonction du joueur (à partir des coordonnées de la grille)
         // compter les tours (this.countTurn ++) incrémentation
         
-
-        
+        this.grid[y][x] = this.playerTurn;
         //ici on udapte notre table html (pour placer visuellement le jeton du joueur 1)
         if (this.playerTurn === this.playerOne) {
             $("tr:nth-child(" + (y+1) + ") td:nth-child(" + (x+1) + ") img").attr('src', './img/yello-coin.gif');
@@ -77,24 +77,22 @@ class Puissance4 {
         if (this.playerTurn === this.playerTwo) {
             $("tr:nth-child(" + (y+1) + ") td:nth-child(" + (x+1) + ") img").attr('src', './img/red-coin.gif');
         }
-       
-        // var player = this.playerTurn;
-        // 
-        // 
-        this.checkWinner(x, y, player);
 
+        this.countTurn ++; 
         
+        var win = this.checkWinner(y, x, this.playerTurn);
+        console.log(win);
 
-
-        this.grid[y][x] = this.playerTurn;
+    
+        
         // L'opérateur tenair comporte 3 opérandes, ce procédé permet de simplifier l'écriture du if : condition ? exprSiVrai : exprSiFaux 
         this.playerTurn = (this.playerTurn === this.playerOne) ?  this.playerTwo : this.playerOne;
-
-        if (this.playerTurn === this.playerOne || this.playerTurn === this.playerTwo ) {
-            this.countTurn ++; 
-            console.log(this.countTurn);
+        
+        // if (this.playerTurn === this.playerOne || this.playerTurn === this.playerTwo ) {
             
-        }
+        //     console.log(this.countTurn);
+            
+        // }
 
         console.log(this.grid);
         
@@ -114,138 +112,70 @@ class Puissance4 {
     
 
     //Méthode révélant le vainqueur 
-    checkWinner(x, y, player){
-    
+    checkWinner(y, x,player){
+
+
      // victoire horizontale
-     var count = 0;
-     var player = this.playerTurn;
+    var count = 0;
  
-     for (let horizon = 0; horizon < this.gridDimension.x; horizon++) {
-         
-         if (count >= 4) {
-             return true;
-             
-         } else {
-             count = (this.grid[x][horizon] == player) ? count + 1 : 0;
-         }
-         console.log(count);
-         
+    for (let horizon = 0; horizon < this.gridDimension.x; horizon++) {
+        count = (this.grid[y][horizon] == player) ? count + 1 : 0;
+        if (count >= 4) {
+            return true;   
+        };
  
-     }
+    };
      
-     // victoire verticale
-     for (let verti = 0; verti < this.gridDimension.y; verti++) {
-         
-         if (count >=4 ) {
-             return true;
-         } else {
-             count = (this.grid[y][verti] == player) ? count +1 : 0;
-         }
-         console.log(count);
+    // victoire verticale
+    count = 0;
+    for (let verti = 0; verti < this.gridDimension.y; verti++) {
+        count = (this.grid[verti][x] == player) ? count +1 : 0;
+
+        if (count >=4) {
+        return true;
+        };
+    };
+    // victoire diagonale 
+    count = 0;
+    var movePosition = x - y;
     
+    for(let a = Math.max(movePosition, 0); a < Math.min(this.gridDimension.y, this.gridDimension.x + movePosition); a++){
+        count = (this.grid[a][a - movePosition] == player) ? count+1 : 0;
 
-    // var directions = {
-    //     left:   {x: -1, y:  0},
-    //     right:  {x:  1, y:  0},
-    //     top:    {x:  0, y:  1},
-    //     bottom: {x:  0, y: -1},
-    //     topLeft:     {x: -1, y:  1},
-    //     topRight:    {x:  1, y:  1},
-    //     bottomLeft:  {x: -1, y: -1},
-    //     bottomRight: {x:  1, y: -1}
-                
-    // };
-    //     // console.log(directions);
-
-    // function wichPlayer (x, y) {
-    //     if( x < 0 || x >= grid[x][y].lenght) {
-    //         return false
-    //     } else {
-    //         return grid[x][y]
-    //     };
-        
-    // };
-
-    
-
-    // function neighbourPlayer (x, y, directions) {
-    //     var movement = directions[directions]
-    //     return {
-    //         x: x + movement.x, 
-    //         y: y + movement.y
-    //     };
-
-    // };
-    // // console.log(neighbourPlayer);
-    
-
-    // function isSamePlayer (x, y, directions) {
-    //     var currentPlayer = wichPlayer(x, y)
-
-    //     var next = neighbourPlayer(x, y, directions)
-    //     var nextPlayer = wichPlayer(x, y)
-    //     return currentPlayer === nextPlayer
-    // };
-
-    // function notSamePlayer (x, y, directions) {
-    //     return !isSamePlayer (x, y, directions)
-    // };
-
-    // function countSamePlayers (x, y, direction) {
-    //     if (isSamePlayer(x, y, direction)) {
-    //         var next = neighbourPlayer(x, y, direction)
-    //         return 1 + countSamePlayers(next.x, next.y, direction)
-    
-    //     } else {
-    //         return 0
-    //     }
-    // }
-    
-    
-    // function wonHorizontal (x, y) {
-    //     var total = countSamePlayers(x, y, 'left') +
-    //                 countSamePlayers(x, y, 'right') + 1
-    //     return total >= 4
-    // }
-    
-    // function wonVertical (x, y) {
-    //     var total = countSamePlayers(x, y, 'top') +
-    //                 countSamePlayers(x, y, 'bottom') + 1
-    //     return total >= 4
-    // }
-    
-    // function wonDiagonal (x, y) {
-    //     var total = countSamePlayers(x, y, 'topLeft') +
-    //                 countSamePlayers(x, y, 'bottomRight') + 1
-    //     return total >= 4
-    // }
-    
-    // function wonAntiDiagonal (x, y) {
-    //     var total = countSamePlayers(x, y, 'topRight') +
-    //         countSamePlayers(x, y, 'bottomLeft') + 1
-    //     return total >= 4
-    // }
-
-    // function won (x,y) {
-    //     return wonHorizontal(x, y) ||
-    //     wonVertical(x, y)  ||
-    //     wonDiagonal (x, y) ||
-    //     wonAntiDiagonal(x, y)
-    // }
-    
-
+        if (count >=4) {
+            return true;   
+        };
     };
 
-    // Ces méthodes vont se retrouver dans le ShowWinner afin de réveler les gagnants
-    // checkCol(){};
+    // victoire anti-diagonale 
+    count = 0;
+    var movePosition2 = x + y;
 
-    // checkHorizontale(){
+    for (let b = Math.max(movePosition2 - this.gridDimension.x + 1, 0); b < Math.min(this.gridDimension.y, movePosition2 + 1); b++) {
+        count = (this.grid[b][movePosition2 - b] == player) ? count+1 : 0; 
 
-    // };
+        if (count >=4) {
+            return true;   
+        };
+        
+    };
 
-    // checkDiag(){
+return false;
+        
 
-    // };
+};
+
+    resetGame(){
+    for (let a = 0; a < x; a++) {
+        for (let b = 0; b < y; b++) {
+        this.grid[a][b] = 0;
+        };
+    };
+    this.countTurn = 0;
+    this.winner = null;
+};
+
+    
     
 };
 
